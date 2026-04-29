@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <clipPath id="c"><circle cx="100" cy="100" r="92"/></clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="98" fill="#000"/>
+  <circle cx="100" cy="100" r="92" fill="none" stroke="#39ff14" stroke-width="6"/>
+  <g clip-path="url(#c)">
+    <rect x="0" y="0" width="200" height="200" fill="#000"/>
+    <!-- cap -->
+    <path d="M40 78 Q100 30 160 78 L160 88 L40 88 Z" fill="#39ff14"/>
+    <rect x="40" y="86" width="120" height="6" fill="#000"/>
+    <!-- head silhouette -->
+    <path d="M62 92 Q62 70 100 70 Q138 70 138 92 L138 112 Q138 122 132 128 Q124 158 100 168 Q76 158 68 128 Q62 122 62 112 Z" fill="#fff"/>
+    <!-- beard -->
+    <path d="M70 118 Q70 162 100 178 Q130 162 130 118 Q120 130 100 130 Q80 130 70 118 Z" fill="#000"/>
+    <!-- mustache -->
+    <path d="M80 116 Q90 122 100 118 Q110 122 120 116 L120 122 Q110 128 100 124 Q90 128 80 122 Z" fill="#000"/>
+    <!-- sunglasses -->
+    <rect x="68" y="98" width="64" height="10" fill="#000"/>
+    <rect x="72" y="100" width="22" height="6" fill="#39ff14"/>
+    <rect x="106" y="100" width="22" height="6" fill="#39ff14"/>
+  </g>
+  <text x="100" y="195" text-anchor="middle" font-family="Impact, sans-serif" font-size="10" fill="#39ff14" letter-spacing="2">FRESH APPEAL</text>
+</svg>
