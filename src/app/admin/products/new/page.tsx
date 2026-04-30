@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ProductForm } from "@/components/product-form";
 
+export const dynamic = "force-dynamic";
+
 export default function NewProductPage() {
   return (
     <div>

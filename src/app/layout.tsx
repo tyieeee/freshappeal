@@ -3,11 +3,15 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { StorefrontChrome } from "@/components/storefront-chrome";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Fresh Appeal Store — Wear the Culture",
   description:
     "Premium streetwear: hoodies, tees, and caps. Built raw, fast, and fresh.",
-  metadataBase: new URL("http://localhost:3000"),
+  ...(process.env.NEXT_PUBLIC_SITE_URL && {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL),
+  }),
   openGraph: {
     title: "Fresh Appeal Store",
     description: "Wear the Culture.",
