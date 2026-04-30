@@ -18,12 +18,13 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const all = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
-  const products = all.map(deserializeProduct);
-  const featured = products.filter((p) => p.isFeatured);
-  const caps = products.filter((p) => p.category === "caps");
-  const lineup = featured.slice(0, 4);
-  const star = featured[0] ?? products[0] ?? null;
+  try {
+    const all = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
+    const products = all.map(deserializeProduct);
+    const featured = products.filter((p) => p.isFeatured);
+    const caps = products.filter((p) => p.category === "caps");
+    const lineup = featured.slice(0, 4);
+    const star = featured[0] ?? products[0] ?? null;
 
   return (
     <div className="bg-white">
@@ -224,6 +225,17 @@ export default async function HomePage() {
 
     </div>
   );
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return (
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="heading text-2xl mb-4">Loading Error</h1>
+          <p className="text-black/60">Unable to load products. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 }
 
 function FeatureCard({
