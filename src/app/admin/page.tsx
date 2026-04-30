@@ -45,9 +45,9 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 mt-1">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-sm text-gray-500 mt-1">
           Overview of your store performance
         </p>
       </div>
@@ -57,7 +57,7 @@ export default async function AdminDashboard() {
           <p className="text-xs text-red-600 mt-1 font-mono">{dbError}</p>
         </div>
       )}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <Stat icon={<Package size={20} />} label="Products" value={products.length.toString()} color="blue" />
         <Stat icon={<ShoppingCart size={20} />} label="Orders" value={orders.length.toString()} color="green" />
         <Stat icon={<DollarSign size={20} />} label="Revenue" value={formatPrice(totalRevenue)} color="purple" />
@@ -70,11 +70,11 @@ export default async function AdminDashboard() {
         />
       </div>
 
-      <div className="mt-8 bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold text-gray-900">Sales Overview</h2>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <TrendingUp size={16} />
+      <div className="mt-6 sm:mt-8 bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 gap-2">
+          <h2 className="text-base sm:text-xl font-semibold text-gray-900">Sales Overview</h2>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-gray-500 shrink-0">
+            <TrendingUp size={14} />
             Last 14 days
           </div>
         </div>
@@ -82,18 +82,18 @@ export default async function AdminDashboard() {
       </div>
 
       {lowStock.length > 0 && (
-        <div className="mt-8 bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900">Low Stock Alerts</h2>
-            <p className="text-sm text-gray-500 mt-1">Products that need restocking</p>
+        <div className="mt-6 sm:mt-8 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div className="p-4 sm:p-6 border-b border-gray-100">
+            <h2 className="text-base sm:text-xl font-semibold text-gray-900">Low Stock Alerts</h2>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Products that need restocking</p>
           </div>
           <div className="divide-y divide-gray-100">
             {lowStock.map((p) => {
               const stock = parseJSON<Record<string, number>>(p.stock, {});
               return (
-                <div key={p.id} className="px-6 py-4 flex justify-between items-center hover:bg-gray-50">
-                  <span className="font-medium text-gray-900">{p.name}</span>
-                  <span className="text-sm text-gray-500">
+                <div key={p.id} className="px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 hover:bg-gray-50">
+                  <span className="font-medium text-sm sm:text-base text-gray-900">{p.name}</span>
+                  <span className="text-xs sm:text-sm text-gray-500">
                     {Object.entries(stock)
                       .filter(([, v]) => v <= 3)
                       .map(([k, v]) => `${k}: ${v}`)
@@ -132,14 +132,14 @@ function Stat({
   const selectedColor = colors[color || "blue"];
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">{label}</span>
-        <div className={`p-2.5 rounded-lg ${accent ? "bg-red-50 text-red-600" : selectedColor}`}>
+    <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[10px] sm:text-sm font-medium text-gray-500 uppercase tracking-wide truncate">{label}</span>
+        <div className={`p-2 sm:p-2.5 rounded-lg shrink-0 ${accent ? "bg-red-50 text-red-600" : selectedColor}`}>
           {icon}
         </div>
       </div>
-      <p className="text-3xl font-bold text-gray-900 mt-4">{value}</p>
+      <p className="text-xl sm:text-3xl font-bold text-gray-900 mt-2 sm:mt-4 truncate">{value}</p>
     </div>
   );
 }

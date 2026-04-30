@@ -1,8 +1,9 @@
 "use client";
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
+import type { ProductView } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Filter, X } from "lucide-react";
 
 const brands = [
@@ -152,9 +153,31 @@ function ShopContent() {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
   const [brandSearch, setBrandSearch] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [dbProducts, setDbProducts] = useState<ProductView[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/products")
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.statusText)))
+      .then((data: ProductView[]) => {
+        if (!cancelled && Array.isArray(data) && data.length > 0) {
+          setDbProducts(data);
+        } else if (!cancelled) {
+          setDbProducts(mockProducts as unknown as ProductView[]);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setDbProducts(mockProducts as unknown as ProductView[]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sourceProducts = (dbProducts ?? (mockProducts as unknown as ProductView[]));
 
   const filteredProducts = useMemo(() => {
-    let filtered = cat ? mockProducts.filter((p) => p.category === cat) : mockProducts;
+    let filtered = cat ? sourceProducts.filter((p) => p.category === cat) : sourceProducts;
 
     // Filter by brands (simulated - using product name as proxy)
     if (selectedBrands.length > 0) {
@@ -174,7 +197,7 @@ function ShopContent() {
     filtered = filtered.filter(p => p.price >= priceRange[0] * 100 && p.price <= priceRange[1] * 100);
 
     return filtered;
-  }, [cat, selectedBrands, selectedSizes, priceRange, brands]);
+  }, [cat, selectedBrands, selectedSizes, priceRange, sourceProducts]);
 
   const pageTitle = cat ? CATEGORY_TITLES[cat] || "FRESH COLLECTION" : "LATEST DROPS";
   const pageSubtitle = cat ? "Shop" : "All Products";

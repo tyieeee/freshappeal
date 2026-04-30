@@ -32,21 +32,63 @@ export default async function HomePage() {
       {/* HERO — Editorial split-text with model overlay */}
       <section className="relative bg-white overflow-hidden">
         {/* Mobile layout — logo centered with background effects */}
-        <div className="sm:hidden relative flex flex-col items-center justify-center min-h-[80vh] px-6 overflow-hidden">
+        <div className="sm:hidden relative flex flex-col items-center justify-center min-h-[90vh] px-6 overflow-hidden">
           {/* Background effects */}
           <div className="absolute inset-0 pointer-events-none">
-            {/* Radial gradient glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] bg-gradient-radial from-black/[0.03] via-transparent to-transparent rounded-full" />
             {/* Subtle grid pattern */}
             <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.5) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
             {/* Decorative circles */}
             <div className="absolute top-[15%] right-[10%] w-32 h-32 rounded-full border border-black/[0.04]" />
             <div className="absolute bottom-[20%] left-[5%] w-48 h-48 rounded-full border border-black/[0.04]" />
             <div className="absolute top-[40%] left-[15%] w-16 h-16 rounded-full bg-black/[0.02]" />
-            <div className="absolute top-[25%] right-[25%] w-8 h-8 rounded-full bg-black/[0.03]" />
+
+            {/* we.png leaf icons scattered */}
+            {[
+              { top: '6%', left: '8%', rotate: -20, size: 48 },
+              { top: '20%', left: '75%', rotate: 15, size: 40 },
+              { top: '50%', left: '3%', rotate: 30, size: 36 },
+              { top: '68%', left: '78%', rotate: -10, size: 44 },
+              { top: '82%', left: '15%', rotate: 25, size: 32 },
+            ].map((item, i) => (
+              <Image
+                key={`leaf-${i}`}
+                src="/we.png"
+                alt=""
+                width={item.size}
+                height={item.size}
+                className="absolute opacity-[0.15] grayscale"
+                style={{ top: item.top, left: item.left, transform: `rotate(${item.rotate}deg)`, imageRendering: 'pixelated' }}
+              />
+            ))}
+
+            {/* Pixelated cigarettes — gray */}
+            {[
+              { top: '12%', left: '60%', rotate: 35, size: 44 },
+              { top: '42%', left: '82%', rotate: -25, size: 38 },
+              { top: '75%', left: '45%', rotate: 10, size: 36 },
+              { top: '30%', left: '2%', rotate: -40, size: 40 },
+            ].map((item, i) => (
+              <svg key={`cig-${i}`} className="absolute opacity-[0.2]" style={{ top: item.top, left: item.left, transform: `rotate(${item.rotate}deg)`, width: item.size, height: item.size * 0.4 }} viewBox="0 0 24 8" fill="none" shapeRendering="crispEdges">
+                {/* Smoke pixels */}
+                <rect x="1" y="0" width="1" height="1" fill="#bbb"/>
+                <rect x="3" y="0" width="1" height="1" fill="#bbb"/>
+                <rect x="0" y="1" width="1" height="1" fill="#bbb"/>
+                <rect x="2" y="1" width="1" height="1" fill="#bbb"/>
+                <rect x="1" y="2" width="1" height="1" fill="#bbb"/>
+                <rect x="3" y="2" width="1" height="1" fill="#bbb"/>
+                <rect x="2" y="3" width="1" height="1" fill="#bbb"/>
+                {/* Filter */}
+                <rect x="3" y="4" width="4" height="3" fill="#bbb"/>
+                {/* Body */}
+                <rect x="7" y="4" width="1" height="3" fill="#999"/>
+                <rect x="8" y="4" width="12" height="3" fill="#ccc"/>
+                {/* Tip */}
+                <rect x="20" y="4" width="4" height="3" fill="#aaa"/>
+              </svg>
+            ))}
           </div>
 
-          {/* Logo — slightly smaller */}
+          {/* Logo */}
           <div className="relative w-52 h-52 mb-5 z-10">
             <Image
               src="/logo.png"
@@ -72,6 +114,14 @@ export default async function HomePage() {
           <Link href="/shop" className="btn-neon text-xs inline-flex mt-6 z-10">
             Shop Now <ArrowRight size={14} />
           </Link>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 animate-bounce">
+            <p className="text-[9px] uppercase tracking-[0.25em] text-black/30">Scroll to explore</p>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-black/30">
+              <path d="M8 2v10M4 8l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
         </div>
 
         {/* Desktop layout — absolute positioned */}
@@ -327,7 +377,7 @@ function FeatureTile({
 function MiniProductCard({ p }: { p: ProductView }) {
   return (
     <Link href={`/product/${p.slug}`} className="card p-2 sm:p-4 flex flex-col group">
-      <div className="relative aspect-square bg-white rounded-lg sm:rounded-xl overflow-hidden">
+      <div className="relative aspect-square bg-[#f4f4f4] rounded-lg sm:rounded-xl overflow-hidden">
         {p.images[0] && (
           <Image src={p.images[0]} alt={p.name} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
         )}

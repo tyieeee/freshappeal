@@ -5,7 +5,7 @@ import { createProduct, updateProduct, type ProductInput } from "@/app/admin/act
 import { Upload, Camera, Trash2 } from "lucide-react";
 
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "OS"];
-const CATEGORIES: ProductInput["category"][] = ["men", "women", "caps", "new"];
+const CATEGORIES: ProductInput["category"][] = ["hoodies", "tees", "caps", "men", "women", "new"];
 
 export function ProductForm({
   initial,

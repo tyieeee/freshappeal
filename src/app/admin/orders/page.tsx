@@ -11,11 +11,40 @@ export default async function AdminOrdersPage() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-        <p className="text-gray-500 mt-1">Manage and track customer orders</p>
+      <div className="mb-5 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Orders</h1>
+        <p className="text-sm text-gray-500 mt-1">Manage and track customer orders</p>
       </div>
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+
+      {/* MOBILE: card list */}
+      <div className="sm:hidden space-y-3">
+        {orders.map((o) => (
+          <Link
+            key={o.id}
+            href={`/admin/orders/${o.id}`}
+            className="block bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50"
+          >
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <p className="font-mono text-xs text-gray-900 font-semibold">#{o.id.slice(-8)}</p>
+              <StatusBadge status={o.status} />
+            </div>
+            <p className="font-medium text-sm text-gray-900 truncate">{o.customerName}</p>
+            <p className="text-xs text-gray-500 truncate">{o.customerEmail}</p>
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+              <span className="font-bold text-sm text-gray-900">{formatPrice(o.totalAmount)}</span>
+              <span className="text-xs text-gray-500">{o.createdAt.toLocaleDateString()}</span>
+            </div>
+          </Link>
+        ))}
+        {orders.length === 0 && (
+          <div className="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-400 text-sm">
+            No orders yet.
+          </div>
+        )}
+      </div>
+
+      {/* DESKTOP: table */}
+      <div className="hidden sm:block bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-600 border-b border-gray-200">

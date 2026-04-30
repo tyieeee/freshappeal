@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { LayoutDashboard, Package, ShoppingCart, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Providers } from "@/app/providers";
+import { AdminMobileNav } from "@/components/admin-mobile-nav";
 
 export default async function AdminLayout({
   children,
@@ -12,17 +13,20 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession(authOptions);
-  const isLogin = false; // login page sets its own layout via being inside this — but the middleware redirects unauth elsewhere.
 
-  // Login page is a child route; if session is null, just render children (login form has its own UI).
   if (!session) return <>{children}</>;
 
   return (
-    <html lang="en">
-      <body className="bg-gray-50 m-0 p-0">
-        <Providers>
-          <div className="min-h-screen flex">
-            <aside className="sticky top-0 h-screen w-64 bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
+    <Providers>
+      <div className="bg-gray-50 -mx-0 -my-0 min-h-screen">
+        <div className="min-h-screen lg:flex">
+            {/* Mobile nav (top bar + drawer) */}
+            <AdminMobileNav
+              user={{ name: session.user?.name, email: session.user?.email }}
+            />
+
+            {/* Desktop sidebar */}
+            <aside className="hidden lg:flex sticky top-0 h-screen w-64 bg-white border-r border-gray-200 flex-col overflow-y-auto">
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center gap-3">
                   <Image src="/logo.png" alt="Fresh Appeal" width={32} height={32} />
@@ -56,11 +60,10 @@ export default async function AdminLayout({
                 <SignOutButton />
               </div>
             </aside>
-            <main className="flex-1 p-8">{children}</main>
-          </div>
-        </Providers>
-      </body>
-    </html>
+            <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">{children}</main>
+        </div>
+      </div>
+    </Providers>
   );
 }
 
