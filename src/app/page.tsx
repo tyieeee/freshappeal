@@ -15,7 +15,7 @@ import {
   Laptop,
 } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const all = await prisma.product.findMany({ orderBy: { createdAt: "desc" } });
