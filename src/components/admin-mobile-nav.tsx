@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Menu, X, LayoutDashboard, Package, ShoppingCart } from "lucide-react";
+import { Menu, X, LayoutDashboard, Package, ShoppingCart, Users } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
 import { AdminNotifications } from "@/components/admin-notifications";
 
@@ -15,6 +15,7 @@ const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/admin/users", label: "Users", icon: Users },
 ];
 
 export function AdminMobileNav({ user }: Props) {

@@ -1,12 +1,10 @@
-import nodemailer from "nodemailer";
-
 /**
  * Lazy SMTP transporter. If SMTP credentials aren't configured we log the
  * message to the console instead of throwing so checkout still succeeds.
  */
-let transporter: nodemailer.Transporter | null = null;
+let transporter: any = null;
 
-function getTransporter() {
+async function getTransporter() {
   if (transporter) return transporter;
   const host = process.env.SMTP_HOST;
   const port = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587;
@@ -14,6 +12,8 @@ function getTransporter() {
   const pass = process.env.SMTP_PASS;
   if (!host || !user || !pass) return null;
 
+  // Dynamic import to avoid static generation issues
+  const nodemailer = (await import("nodemailer")).default;
   transporter = nodemailer.createTransport({
     host,
     port,
@@ -31,7 +31,7 @@ export type MailInput = {
 };
 
 export async function sendMail({ to, subject, html, text }: MailInput) {
-  const t = getTransporter();
+  const t = await getTransporter();
   const from = process.env.SMTP_FROM ?? process.env.SMTP_USER ?? "no-reply@freshappeal.store";
   if (!t) {
     console.log(

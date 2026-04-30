@@ -83,6 +83,50 @@ export async function seedShopProducts() {
   return { created: createdCount };
 }
 
+export async function setUserRole(userId: string, role: "admin" | "customer") {
+  const { getServerSession } = await import("next-auth");
+  const { authOptions } = await import("@/lib/auth");
+  const session = await getServerSession(authOptions);
+  const me = session?.user as { id?: string; role?: string } | undefined;
+  if (me?.role !== "admin") throw new Error("Forbidden");
+
+  const target = await prisma.user.findUnique({ where: { id: userId } });
+  if (!target) throw new Error("User not found");
+
+  // Prevent demoting yourself if you're the only admin
+  if (role === "customer" && target.role === "admin") {
+    const adminCount = await prisma.user.count({ where: { role: "admin" } });
+    if (adminCount <= 1) {
+      throw new Error("Cannot demote the only admin. Promote another user first.");
+    }
+  }
+
+  await prisma.user.update({ where: { id: userId }, data: { role } });
+  revalidatePath("/admin/users");
+}
+
+export async function deleteUser(userId: string) {
+  const { getServerSession } = await import("next-auth");
+  const { authOptions } = await import("@/lib/auth");
+  const session = await getServerSession(authOptions);
+  const me = session?.user as { id?: string; email?: string; role?: string } | undefined;
+  if (me?.role !== "admin") throw new Error("Forbidden");
+
+  const target = await prisma.user.findUnique({ where: { id: userId } });
+  if (!target) throw new Error("User not found");
+  if (target.email === me.email) throw new Error("You cannot delete your own account");
+
+  if (target.role === "admin") {
+    const adminCount = await prisma.user.count({ where: { role: "admin" } });
+    if (adminCount <= 1) {
+      throw new Error("Cannot delete the only admin");
+    }
+  }
+
+  await prisma.user.delete({ where: { id: userId } });
+  revalidatePath("/admin/users");
+}
+
 export async function updateOrderStatus(id: string, status: string) {
   if (!["pending", "shipped", "delivered", "cancelled"].includes(status)) {
     throw new Error("Invalid status");

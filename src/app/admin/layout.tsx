@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { LayoutDashboard, Package, ShoppingCart } from "lucide-react";
+import { LayoutDashboard, Package, ShoppingCart, Users } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Providers } from "@/app/providers";
 import { AdminMobileNav } from "@/components/admin-mobile-nav";
@@ -41,6 +41,7 @@ export default async function AdminLayout({
                 <NavLink href="/admin" icon={<LayoutDashboard size={18} />} label="Dashboard" />
                 <NavLink href="/admin/products" icon={<Package size={18} />} label="Products" />
                 <NavLink href="/admin/orders" icon={<ShoppingCart size={18} />} label="Orders" />
+                <NavLink href="/admin/users" icon={<Users size={18} />} label="Users" />
                 <AdminNotifications variant="sidebar" />
               </nav>
               <div className="p-4 border-t border-gray-100">
