@@ -10,7 +10,7 @@ export function ProductCard({ p }: { p: ProductView }) {
       href={`/product/${p.slug}`}
       className="group block"
     >
-      <div className="relative aspect-square bg-[#f4f4f4] rounded-2xl overflow-hidden">
+      <div className="relative aspect-square bg-[#f4f4f4] rounded-xl sm:rounded-2xl overflow-hidden">
         {img && (
           <Image
             src={img}
@@ -26,12 +26,12 @@ export function ProductCard({ p }: { p: ProductView }) {
           </span>
         )}
       </div>
-      <div className="px-1 pt-3 flex justify-between items-start gap-2">
+      <div className="px-1 pt-2 sm:pt-3 flex justify-between items-start gap-1 sm:gap-2">
         <div className="min-w-0">
-          <p className="font-bold uppercase text-sm truncate group-hover:underline">
+          <p className="font-bold uppercase text-[10px] sm:text-xs md:text-sm truncate group-hover:underline">
             {p.name}
           </p>
-          <p className="text-xs text-black/50">{formatPrice(p.price)}</p>
+          <p className="text-[10px] sm:text-xs text-black/50">{formatPrice(p.price)}</p>
         </div>
         <div className="flex gap-0.5 mt-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-black" />

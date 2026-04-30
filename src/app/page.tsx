@@ -31,9 +31,9 @@ export default async function HomePage() {
       <InitialLoader />
       {/* HERO — Editorial split-text with model overlay */}
       <section className="relative bg-white overflow-hidden">
-        <div className="relative max-w-[1400px] mx-auto min-h-[560px] sm:min-h-[680px] lg:min-h-[740px] px-4 sm:px-8">
+        <div className="relative max-w-[1400px] mx-auto min-h-[420px] xs:min-h-[480px] sm:min-h-[680px] lg:min-h-[740px] px-4 sm:px-8">
           {/* Massive headline behind models */}
-          <h1 className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-full text-center heading text-[16vw] sm:text-[14vw] lg:text-[12vw] leading-[0.85] tracking-tight text-black select-none pointer-events-none whitespace-nowrap">
+          <h1 className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-full text-center heading text-[18vw] sm:text-[14vw] lg:text-[12vw] leading-[0.85] tracking-tight text-black select-none pointer-events-none whitespace-nowrap">
             FRESH APPEAL
           </h1>
 
@@ -51,13 +51,13 @@ export default async function HomePage() {
           </div>
 
           {/* Models image overlapping the headline */}
-          <div className="absolute inset-x-0 bottom-0 top-[18%] flex items-end justify-center z-10 pointer-events-none">
-            <div className="relative w-full max-w-[1100px] h-[88%]">
+          <div className="absolute inset-x-0 bottom-0 top-[15%] sm:top-[18%] flex items-end justify-center z-10 pointer-events-none">
+            <div className="relative w-full max-w-[1100px] h-[85%] sm:h-[88%]">
               <Image
                 src="/hero.png"
                 alt="Fresh Appeal — Streetwear collection"
                 fill
-                sizes="(max-width: 1400px) 100vw, 1100px"
+                sizes="(max-width: 640px) 100vw, (max-width: 1400px) 100vw, 1100px"
                 className="object-contain object-bottom"
                 priority
               />
@@ -65,22 +65,29 @@ export default async function HomePage() {
           </div>
 
           {/* Bottom-left tagline */}
-          <div className="absolute bottom-10 left-4 sm:left-10 z-20">
-            <p className="heading text-xl sm:text-2xl leading-[1.05] tracking-tight">
+          <div className="absolute bottom-4 sm:bottom-10 left-4 sm:left-10 z-20">
+            <p className="heading text-base sm:text-xl md:text-2xl leading-[1.05] tracking-tight">
               SINCE 2024<br />STREETWEAR ELEGANCE
             </p>
           </div>
 
-          {/* Bottom-right description */}
-          <div className="absolute bottom-10 right-4 sm:right-10 z-20 max-w-[260px] text-right">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-black/80 leading-relaxed font-bold">
+          {/* Bottom-right description — hidden on very small screens */}
+          <div className="absolute bottom-4 sm:bottom-10 right-4 sm:right-10 z-20 max-w-[180px] sm:max-w-[260px] text-right hidden xs:block">
+            <p className="text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-black/80 leading-relaxed font-bold">
               Fresh Appeal proposes well-<br />
               developed, thoughtful<br />
               clothes with a discerning<br />
               point-of-view.
             </p>
-            <Link href="/shop" className="btn-neon mt-5 text-xs inline-flex">
+            <Link href="/shop" className="btn-neon mt-3 sm:mt-5 text-[10px] sm:text-xs inline-flex">
               Shop Now <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          {/* Mobile CTA — shown only on very small screens */}
+          <div className="absolute bottom-4 right-4 z-20 xs:hidden">
+            <Link href="/shop" className="btn-neon text-[10px] inline-flex">
+              Shop Now <ArrowRight size={12} />
             </Link>
           </div>
         </div>
@@ -89,11 +96,11 @@ export default async function HomePage() {
       {/* BEST PRODUCT — center image with 4 surrounding tiles */}
       <ScrollAnimation direction="up">
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 sm:py-28">
-          <div className="text-center max-w-2xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto px-2">
             <span className="text-[11px] uppercase tracking-[0.3em] text-black/50">
               Best Product
             </span>
-            <h2 className="heading text-5xl sm:text-6xl mt-3">
+            <h2 className="heading text-3xl sm:text-5xl lg:text-6xl mt-3">
               GO-TO STREET PIECE
             </h2>
             <p className="mt-4 text-black/60">
@@ -102,13 +109,13 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-12 grid lg:grid-cols-[1fr_1.2fr_1fr] gap-6 items-center">
-            <div className="grid gap-6 order-2 lg:order-1">
+          <div className="mt-8 sm:mt-12 grid sm:grid-cols-2 lg:grid-cols-[1fr_1.2fr_1fr] gap-4 sm:gap-6 items-center">
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-4 sm:gap-6 order-2 lg:order-1">
               <FeatureTile icon={<Maximize2 size={20} />} title="Oversized Fit" text="Drop-shoulder cut for that effortless street silhouette." />
               <FeatureTile icon={<Droplets size={20} />} title="Garment Washed" text="Pre-shrunk and broken-in for day-one comfort." />
             </div>
 
-            <div className="order-1 lg:order-2 relative aspect-square">
+            <div className="order-1 lg:order-2 sm:col-span-2 lg:col-span-1 relative aspect-square max-h-[300px] sm:max-h-[400px] lg:max-h-none">
               <div className="relative w-full h-full">
                 <Image
                   src="/cap.png"
@@ -121,7 +128,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="grid gap-6 order-3">
+            <div className="grid grid-cols-2 sm:grid-cols-1 gap-4 sm:gap-6 order-3">
               <FeatureTile icon={<UserCheck size={20} />} title="Premium Cotton" text="400gsm heavyweight cotton, made to outlast trends." />
               <FeatureTile icon={<Laptop size={20} />} title="Limited Run" text="Numbered drops. Once they're gone, they're gone." />
             </div>
@@ -131,8 +138,8 @@ export default async function HomePage() {
 
       {/* GET READY OVERLAY + 4-PRODUCT GRID */}
       <ScrollAnimation direction="left" delay={0.1}>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20 grid lg:grid-cols-2 gap-4">
-          <div className="relative rounded-2xl overflow-hidden min-h-[460px] bg-[#f4f4f4]">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20 grid lg:grid-cols-2 gap-4">
+          <div className="relative rounded-2xl overflow-hidden min-h-[320px] sm:min-h-[460px] bg-[#f4f4f4]">
             <Image
               src="/man.jpeg"
               alt="New collection"
@@ -140,8 +147,8 @@ export default async function HomePage() {
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
-            <div className="absolute bottom-6 left-6 right-6 sm:right-auto sm:max-w-xs bg-black/85 text-white rounded-2xl p-6 backdrop-blur">
-              <h3 className="heading text-3xl">GET FRESH FOR THE NEW SEASON</h3>
+            <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-auto sm:max-w-xs bg-black/85 text-white rounded-2xl p-4 sm:p-6 backdrop-blur">
+              <h3 className="heading text-xl sm:text-3xl">GET FRESH FOR THE NEW SEASON</h3>
               <p className="text-sm text-white/70 mt-2">
                 Layer up with the new arrivals — built for the city and beyond.
               </p>
@@ -167,12 +174,12 @@ export default async function HomePage() {
       {/* GEAR ESSENTIALS */}
       <ScrollAnimation direction="up" delay={0.2}>
         <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-          <div className="flex items-end justify-between mb-8 flex-wrap gap-3">
+          <div className="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3">
             <div>
               <span className="text-[11px] uppercase tracking-[0.3em] text-black/50">
                 Caps
               </span>
-              <h2 className="heading text-4xl sm:text-5xl mt-2">CAP COLLECTION</h2>
+              <h2 className="heading text-2xl sm:text-4xl lg:text-5xl mt-2">CAP COLLECTION</h2>
               <p className="text-sm text-black/60 mt-2 max-w-lg">
                 Six-panel structured caps with raised embroidery — finishing
                 touches that complete the fit.
@@ -198,13 +205,13 @@ export default async function HomePage() {
 
       {/* FEATURED LINEUP */}
       <ScrollAnimation direction="up" delay={0.3}>
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-          <div className="flex items-end justify-between mb-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-20">
+          <div className="flex items-end justify-between mb-6 sm:mb-8">
             <div>
               <span className="text-[11px] uppercase tracking-[0.3em] text-black/50">
                 The Lineup
               </span>
-              <h2 className="heading text-4xl sm:text-5xl mt-2">FRESH COLLECTION</h2>
+              <h2 className="heading text-2xl sm:text-4xl lg:text-5xl mt-2">FRESH COLLECTION</h2>
             </div>
             <Link href="/shop" className="btn-ghost text-xs uppercase tracking-widest">
               View all <ArrowRight size={14} />
@@ -282,16 +289,16 @@ function FeatureTile({
 
 function MiniProductCard({ p }: { p: ProductView }) {
   return (
-    <Link href={`/product/${p.slug}`} className="card p-4 flex flex-col group">
-      <div className="relative aspect-square bg-white rounded-xl overflow-hidden">
+    <Link href={`/product/${p.slug}`} className="card p-2 sm:p-4 flex flex-col group">
+      <div className="relative aspect-square bg-white rounded-lg sm:rounded-xl overflow-hidden">
         {p.images[0] && (
-          <Image src={p.images[0]} alt={p.name} fill sizes="25vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
+          <Image src={p.images[0]} alt={p.name} fill sizes="(max-width: 640px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
         )}
       </div>
-      <div className="mt-3 flex items-start justify-between gap-2">
+      <div className="mt-2 sm:mt-3 flex items-start justify-between gap-1 sm:gap-2">
         <div className="min-w-0">
-          <p className="font-bold uppercase text-xs sm:text-sm truncate">{p.name}</p>
-          <p className="text-xs text-black/50">{formatPrice(p.price)}</p>
+          <p className="font-bold uppercase text-[10px] sm:text-xs md:text-sm truncate">{p.name}</p>
+          <p className="text-[10px] sm:text-xs text-black/50">{formatPrice(p.price)}</p>
         </div>
         <div className="flex gap-0.5 mt-1.5 shrink-0">
           <span className="w-1.5 h-1.5 rounded-full bg-black" />
