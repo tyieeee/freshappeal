@@ -9,11 +9,21 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
   const session = await getServerSession(authOptions);
-  const [products, orders, recentOrders] = await Promise.all([
-    prisma.product.findMany(),
-    prisma.order.findMany(),
-    prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 30 }),
-  ]);
+  let products: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+  let orders: Awaited<ReturnType<typeof prisma.order.findMany>> = [];
+  let recentOrders: Awaited<ReturnType<typeof prisma.order.findMany>> = [];
+  let dbError: string | null = null;
+
+  try {
+    [products, orders, recentOrders] = await Promise.all([
+      prisma.product.findMany(),
+      prisma.order.findMany(),
+      prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 30 }),
+    ]);
+  } catch (error) {
+    console.error("Dashboard DB error:", error);
+    dbError = error instanceof Error ? error.message : "Unknown error";
+  }
 
   const totalRevenue = orders.reduce((s, o) => s + o.totalAmount, 0);
   const lowStock = products.filter((p) => {
@@ -41,6 +51,12 @@ export default async function AdminDashboard() {
           Overview of your store performance
         </p>
       </div>
+      {dbError && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <p className="text-sm font-semibold text-red-700">Database Connection Error</p>
+          <p className="text-xs text-red-600 mt-1 font-mono">{dbError}</p>
+        </div>
+      )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Stat icon={<Package size={20} />} label="Products" value={products.length.toString()} color="blue" />
         <Stat icon={<ShoppingCart size={20} />} label="Orders" value={orders.length.toString()} color="green" />
