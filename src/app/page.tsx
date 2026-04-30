@@ -227,11 +227,13 @@ export default async function HomePage() {
   );
   } catch (error) {
     console.error("Error fetching products:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return (
       <div className="bg-white min-h-screen flex items-center justify-center">
-        <div className="text-center">
+        <div className="text-center max-w-md">
           <h1 className="heading text-2xl mb-4">Loading Error</h1>
-          <p className="text-black/60">Unable to load products. Please try again later.</p>
+          <p className="text-black/60 mb-4">Unable to load products. Please try again later.</p>
+          <p className="text-xs text-black/40 font-mono">{errorMessage}</p>
         </div>
       </div>
     );
