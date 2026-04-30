@@ -42,9 +42,9 @@ export const useCart = create<CartState>()(
           if (idx >= 0) {
             const next = [...s.items];
             next[idx] = { ...next[idx], qty: next[idx].qty + item.qty };
-            return { items: next, isOpen: true };
+            return { items: next };
           }
-          return { items: [...s.items, item], isOpen: true };
+          return { items: [...s.items, item] };
         }),
       remove: (productId, size) =>
         set((s) => ({

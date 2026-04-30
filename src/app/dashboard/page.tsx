@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useProfile } from "@/lib/profile-store";
 import { useCart } from "@/lib/cart-store";
 import { User, MapPin, Mail, Edit2, Check, ShoppingBag, Package } from "lucide-react";
+import { MyOrders } from "@/components/my-orders";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -63,7 +64,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       {/* HEADER */}
       <div className="mb-8 sm:mb-10">
         <p className="text-[10px] uppercase tracking-[0.3em] text-black/50 mb-2">My Account</p>
@@ -71,7 +72,7 @@ export default function DashboardPage() {
       </div>
 
       {/* QUICK STATS */}
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
         <div className="card p-4 sm:p-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center">
@@ -98,8 +99,14 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* ORDERS — main focus */}
+      <MyOrders />
+
+      {/* PROFILE + ADDRESS side by side on desktop */}
+      <div className="grid lg:grid-cols-2 gap-5">
+
       {/* PROFILE INFO */}
-      <section className="card p-5 sm:p-7 mb-5">
+      <section className="card p-5 sm:p-7 mb-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="heading text-xl sm:text-2xl">Profile</h2>
         </div>
@@ -147,7 +154,7 @@ export default function DashboardPage() {
       </section>
 
       {/* ADDRESS */}
-      <section className="card p-5 sm:p-7 mb-5">
+      <section className="card p-5 sm:p-7 mb-0">
         <div className="flex items-center justify-between mb-4">
           <h2 className="heading text-xl sm:text-2xl">Shipping Address</h2>
           {address && !editingAddress && (
@@ -254,6 +261,7 @@ export default function DashboardPage() {
           </div>
         ) : null}
       </section>
+      </div>
     </div>
   );
 }

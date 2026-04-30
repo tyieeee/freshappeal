@@ -5,6 +5,7 @@ import { ShoppingBag, Menu, X, User, Search, X as CloseX, LogOut } from "lucide-
 import { useCart } from "@/lib/cart-store";
 import { useEffect, useState, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
+import { useOrderStatusUpdates } from "@/lib/order-status-tracker";
 
 const links = [
   { href: "/shop", label: "Latest Drops" },
@@ -133,6 +134,7 @@ export function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const { updatedCount: orderUpdates, markSeen: markOrdersSeen } = useOrderStatusUpdates();
   useEffect(() => setMounted(true), []);
 
   const filteredProducts = mockProducts.filter((product) =>
@@ -295,7 +297,13 @@ export function Navbar() {
           )}
           <button
             className="lg:hidden p-2 text-black/70 relative w-10 h-10 flex items-center justify-center"
-            onClick={() => setMobile((v) => !v)}
+            onClick={() => {
+              setMobile((v) => {
+                const next = !v;
+                if (next) markOrdersSeen();
+                return next;
+              });
+            }}
             aria-label="Menu"
           >
             <span className="relative w-5 h-4 inline-block">
@@ -315,6 +323,15 @@ export function Navbar() {
                 }`}
               />
             </span>
+            {/* Order status update badge */}
+            {mounted && orderUpdates > 0 && !mobile && (
+              <span
+                className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm ring-2 ring-white"
+                aria-label={`${orderUpdates} order update${orderUpdates === 1 ? "" : "s"}`}
+              >
+                {orderUpdates > 9 ? "9+" : orderUpdates}
+              </span>
+            )}
           </button>
         </div>
       </div>

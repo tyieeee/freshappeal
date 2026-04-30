@@ -34,6 +34,10 @@ function LoginForm() {
       setError("Login failed. Please try again.");
       return;
     }
+    // Tell the welcome toast to show on the next page
+    try {
+      sessionStorage.setItem("fresh-just-logged-in", "1");
+    } catch {}
     router.push(callbackUrl);
     router.refresh();
   }

@@ -6,6 +6,7 @@ import { LayoutDashboard, Package, ShoppingCart } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Providers } from "@/app/providers";
 import { AdminMobileNav } from "@/components/admin-mobile-nav";
+import { AdminNotifications } from "@/components/admin-notifications";
 
 export default async function AdminLayout({
   children,
@@ -40,6 +41,7 @@ export default async function AdminLayout({
                 <NavLink href="/admin" icon={<LayoutDashboard size={18} />} label="Dashboard" />
                 <NavLink href="/admin/products" icon={<Package size={18} />} label="Products" />
                 <NavLink href="/admin/orders" icon={<ShoppingCart size={18} />} label="Orders" />
+                <AdminNotifications variant="sidebar" />
               </nav>
               <div className="p-4 border-t border-gray-100">
                 <div className="flex items-center gap-3 mb-3">

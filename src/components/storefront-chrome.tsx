@@ -3,10 +3,12 @@ import { usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
+import { WelcomeToast } from "@/components/welcome-toast";
 
 export function StorefrontChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isCheckout = pathname?.startsWith("/checkout");
 
   if (isAdmin) {
     return <>{children}</>;
@@ -15,8 +17,9 @@ export function StorefrontChrome({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Navbar />
+      <WelcomeToast />
       <main className="flex-1">{children}</main>
-      <Footer />
+      {!isCheckout && <Footer />}
       <CartDrawer />
     </>
   );

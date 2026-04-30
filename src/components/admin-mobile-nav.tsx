@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X, LayoutDashboard, Package, ShoppingCart } from "lucide-react";
 import { SignOutButton } from "@/components/sign-out-button";
+import { AdminNotifications } from "@/components/admin-notifications";
 
 type Props = {
   user: { name?: string | null; email?: string | null };
@@ -40,13 +41,16 @@ export function AdminMobileNav({ user }: Props) {
             <Image src="/logo.png" alt="Fresh Appeal" width={26} height={26} />
             <span className="font-bold text-gray-900 text-sm">Fresh Appeal</span>
           </Link>
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-            className="p-2 rounded-lg hover:bg-gray-100 text-gray-700"
-          >
-            <Menu size={22} />
-          </button>
+          <div className="flex items-center gap-1">
+            <AdminNotifications variant="header" />
+            <button
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              className="p-2 rounded-lg hover:bg-gray-100 text-gray-700"
+            >
+              <Menu size={22} />
+            </button>
+          </div>
         </div>
       </header>
 

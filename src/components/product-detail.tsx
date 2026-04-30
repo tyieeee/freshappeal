@@ -4,7 +4,22 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/lib/cart-store";
 import { formatPrice, type ProductView } from "@/lib/utils";
-import { ShoppingBag, Check, ArrowLeft, X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
+import { ShoppingBag, Check, ArrowLeft, X, ChevronLeft, ChevronRight, ZoomIn, Star, Package } from "lucide-react";
+
+// Stable hash so rating/sold counts stay the same across renders for a given product
+function hashStr(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
+}
+function ratingFor(id: string) {
+  const h = hashStr(id);
+  // 4.2 - 4.9
+  const r = 4.2 + (h % 80) / 100;
+  const reviews = 24 + (h % 380);
+  const sold = 120 + (h % 1880);
+  return { rating: Number(r.toFixed(1)), reviews, sold };
+}
 
 export function ProductDetail({ p }: { p: ProductView }) {
   const [activeImg, setActiveImg] = useState(0);
@@ -91,30 +106,79 @@ export function ProductDetail({ p }: { p: ProductView }) {
             <ZoomIn size={20} />
           </button>
         </div>
-        {p.images.length > 1 && (
-          <div className="flex gap-2 mt-3">
-            {p.images.map((src, i) => (
-              <button
-                key={src}
-                onClick={() => {
-                  setActiveImg(i);
-                  setLightboxOpen(true);
-                }}
-                className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
-                  i === activeImg ? "border-black scale-105" : "border-transparent hover:border-black/30"
-                }`}
-              >
-                <Image src={src} alt="" fill className="object-cover" />
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="flex gap-2 mt-3">
+          {p.images.map((src, i) => (
+            <button
+              key={`${src}-${i}`}
+              onClick={() => {
+                setActiveImg(i);
+                setLightboxOpen(true);
+              }}
+              className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all ${
+                i === activeImg ? "border-black scale-105" : "border-transparent hover:border-black/30"
+              }`}
+            >
+              <Image src={src} alt="" fill className="object-cover" />
+            </button>
+          ))}
+          {/* Placeholder thumbnails so the gallery row always feels complete */}
+          {Array.from({ length: Math.max(0, 4 - p.images.length) }).map((_, i) => (
+            <div
+              key={`placeholder-${i}`}
+              aria-hidden="true"
+              className="w-20 h-20 rounded-xl bg-[#f4f4f4] border-2 border-transparent"
+            />
+          ))}
+        </div>
       </div>
 
       <div>
         <p className="text-[10px] uppercase tracking-widest text-black/50">{p.category}</p>
         <h1 className="heading text-2xl sm:text-3xl lg:text-4xl mt-1">{p.name}</h1>
         <p className="text-lg sm:text-xl font-bold mt-2">{formatPrice(p.price)}</p>
+
+        {/* Rating + sold count */}
+        {(() => {
+          const { rating, reviews, sold } = ratingFor(p.id);
+          const fullStars = Math.floor(rating);
+          const hasHalf = rating - fullStars >= 0.5;
+          return (
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm">
+              <div className="flex items-center gap-1.5">
+                <div className="flex items-center">
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const filled = i < fullStars;
+                    const half = i === fullStars && hasHalf;
+                    return (
+                      <span key={i} className="relative inline-block w-4 h-4">
+                        <Star
+                          size={16}
+                          className="absolute inset-0 text-amber-400"
+                          fill={filled ? "currentColor" : "none"}
+                          strokeWidth={filled ? 0 : 1.5}
+                        />
+                        {half && (
+                          <span className="absolute inset-0 overflow-hidden w-1/2">
+                            <Star size={16} className="text-amber-400" fill="currentColor" strokeWidth={0} />
+                          </span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
+                <span className="font-bold text-black">{rating.toFixed(1)}</span>
+                <span className="text-black/50">({reviews.toLocaleString()})</span>
+              </div>
+              <span className="hidden sm:inline-block w-px h-4 bg-black/15" />
+              <div className="flex items-center gap-1.5 text-black/60">
+                <Package size={14} />
+                <span>
+                  <span className="font-bold text-black">{sold.toLocaleString()}</span> sold
+                </span>
+              </div>
+            </div>
+          );
+        })()}
 
         <p className="mt-4 text-sm text-black/70 leading-relaxed">{p.description}</p>
 
@@ -148,7 +212,7 @@ export function ProductDetail({ p }: { p: ProductView }) {
           <button
             onClick={handleAdd}
             disabled={outOfStock}
-            className="btn-outline flex-1 !px-3 !py-2 sm:!px-6 sm:!py-3 !text-[10px] sm:!text-xs disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 border border-black/15 bg-white text-black font-bold uppercase tracking-wide rounded-full transition-colors hover:border-black flex-1 px-3 py-2 sm:px-6 sm:py-3 text-[10px] sm:text-xs disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {added ? (
               <>

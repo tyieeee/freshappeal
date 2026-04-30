@@ -11,17 +11,20 @@ export function OrderStatusForm({ id, status }: { id: string; status: string }) 
   const [pending, startTransition] = useTransition();
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2.5">
       <select
-        className="input"
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-900 capitalize focus:outline-none focus:border-gray-900 focus:ring-1 focus:ring-gray-900 transition-colors"
       >
         {STATUSES.map((s) => (
-          <option key={s} value={s}>{s}</option>
+          <option key={s} value={s} className="capitalize">
+            {s}
+          </option>
         ))}
       </select>
       <button
+        type="button"
         disabled={pending || value === status}
         onClick={() =>
           startTransition(async () => {
@@ -29,7 +32,7 @@ export function OrderStatusForm({ id, status }: { id: string; status: string }) 
             router.refresh();
           })
         }
-        className="btn-neon w-full text-sm disabled:opacity-40"
+        className="w-full inline-flex items-center justify-center gap-2 bg-gray-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {pending ? "Updating..." : "Update Status"}
       </button>

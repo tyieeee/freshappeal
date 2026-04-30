@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
 import type { ProductView } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Filter, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, X, Search, ChevronDown, Check } from "lucide-react";
 
 const brands = [
   { id: 1, name: "Nike", logo: "🏃" },
@@ -222,88 +222,256 @@ function ShopContent() {
     );
   };
 
+  const activeFilterCount =
+    selectedBrands.length +
+    selectedSizes.length +
+    (priceRange[0] !== 0 || priceRange[1] !== 200 ? 1 : 0);
+
   const FilterPanel = () => (
-    <>
-      {/* BRAND FILTER */}
-      <div className="card p-5">
-        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Brand</h3>
-        <input
-          type="text"
-          placeholder="Search brands..."
-          value={brandSearch}
-          onChange={(e) => setBrandSearch(e.target.value)}
-          className="input mb-3 text-sm"
-        />
-        <div className="space-y-2 max-h-48 overflow-y-auto">
-          {filteredBrands.map((brand) => (
-            <label key={brand.id} className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-black/5 transition-colors">
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(brand.id)}
-                onChange={() => toggleBrand(brand.id)}
-                className="w-4 h-4 rounded border-black/20"
-              />
-              <span className="text-sm font-medium">{brand.name}</span>
-            </label>
+    <div className="space-y-4">
+      {/* Active filter pills */}
+      {activeFilterCount > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedBrands.map((id) => {
+            const b = brands.find((x) => x.id === id);
+            if (!b) return null;
+            return (
+              <span
+                key={`b-${id}`}
+                className="inline-flex items-center gap-1 px-2.5 py-1 bg-black text-white rounded-full text-[11px] font-medium"
+              >
+                {b.name}
+                <button
+                  type="button"
+                  onClick={() => toggleBrand(id)}
+                  className="hover:bg-white/20 rounded-full p-0.5"
+                  aria-label={`Remove ${b.name}`}
+                >
+                  <X size={10} />
+                </button>
+              </span>
+            );
+          })}
+          {selectedSizes.map((s) => (
+            <span
+              key={`s-${s}`}
+              className="inline-flex items-center gap-1 px-2.5 py-1 bg-black text-white rounded-full text-[11px] font-medium"
+            >
+              {s}
+              <button
+                type="button"
+                onClick={() => toggleSize(s)}
+                className="hover:bg-white/20 rounded-full p-0.5"
+                aria-label={`Remove size ${s}`}
+              >
+                <X size={10} />
+              </button>
+            </span>
           ))}
+          {(priceRange[0] !== 0 || priceRange[1] !== 200) && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-black text-white rounded-full text-[11px] font-medium">
+              ${priceRange[0]} - ${priceRange[1]}
+              <button
+                type="button"
+                onClick={() => setPriceRange([0, 200])}
+                className="hover:bg-white/20 rounded-full p-0.5"
+                aria-label="Reset price"
+              >
+                <X size={10} />
+              </button>
+            </span>
+          )}
         </div>
-      </div>
+      )}
+
+      {/* BRAND FILTER */}
+      <details open className="group bg-white rounded-2xl border border-black/10 overflow-hidden">
+        <summary className="list-none cursor-pointer px-5 py-4 flex items-center justify-between hover:bg-black/[0.02] transition-colors">
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-sm">Brand</h3>
+            {selectedBrands.length > 0 && (
+              <span className="bg-black text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {selectedBrands.length}
+              </span>
+            )}
+          </div>
+          <ChevronDown size={16} className="text-black/40 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-5 pb-4 space-y-3 border-t border-black/5">
+          <div className="relative pt-3">
+            <Search size={14} className="absolute left-3 top-1/2 mt-1.5 text-black/40 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search brands..."
+              value={brandSearch}
+              onChange={(e) => setBrandSearch(e.target.value)}
+              className="w-full bg-black/[0.03] border border-transparent rounded-lg pl-9 pr-3 py-2 text-sm placeholder:text-black/40 focus:outline-none focus:border-black focus:bg-white transition-all"
+            />
+          </div>
+          <div className="space-y-0.5 max-h-52 overflow-y-auto -mx-2 px-2 scrollbar-hide">
+            {filteredBrands.map((brand) => {
+              const checked = selectedBrands.includes(brand.id);
+              return (
+                <label
+                  key={brand.id}
+                  className={`flex items-center gap-3 cursor-pointer px-2 py-2 rounded-lg transition-colors ${
+                    checked ? "bg-black/[0.04]" : "hover:bg-black/[0.03]"
+                  }`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggleBrand(brand.id)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                      checked ? "bg-black border-black" : "border-black/25 bg-white"
+                    }`}
+                  >
+                    {checked && <Check size={11} className="text-white" strokeWidth={3} />}
+                  </div>
+                  <span className="text-sm font-medium flex-1">{brand.name}</span>
+                </label>
+              );
+            })}
+            {filteredBrands.length === 0 && (
+              <p className="text-xs text-black/40 text-center py-4">No brands found.</p>
+            )}
+          </div>
+        </div>
+      </details>
 
       {/* PRICE FILTER */}
-      <div className="card p-5">
-        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Price Range</h3>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            value={priceRange[0]}
-            onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-            className="input text-sm w-full"
-            placeholder="Min"
-          />
-          <span className="text-black/40">-</span>
-          <input
-            type="number"
-            value={priceRange[1]}
-            onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-            className="input text-sm w-full"
-            placeholder="Max"
-          />
+      <details open className="group bg-white rounded-2xl border border-black/10 overflow-hidden">
+        <summary className="list-none cursor-pointer px-5 py-4 flex items-center justify-between hover:bg-black/[0.02] transition-colors">
+          <h3 className="font-bold text-sm">Price Range</h3>
+          <ChevronDown size={16} className="text-black/40 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-5 pb-5 pt-3 space-y-4 border-t border-black/5">
+          {/* Range slider */}
+          <div className="relative h-10 flex items-center">
+            <div className="absolute inset-x-0 h-1.5 bg-black/10 rounded-full">
+              <div
+                className="absolute h-1.5 bg-black rounded-full"
+                style={{
+                  left: `${(priceRange[0] / 200) * 100}%`,
+                  right: `${100 - (priceRange[1] / 200) * 100}%`,
+                }}
+              />
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={200}
+              value={priceRange[0]}
+              onChange={(e) =>
+                setPriceRange([Math.min(Number(e.target.value), priceRange[1] - 1), priceRange[1]])
+              }
+              style={{ zIndex: priceRange[0] > 200 - 20 ? 5 : 3 }}
+              className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:active:cursor-grabbing [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110 [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:cursor-grab [&::-moz-range-thumb]:active:cursor-grabbing"
+            />
+            <input
+              type="range"
+              min={0}
+              max={200}
+              value={priceRange[1]}
+              onChange={(e) =>
+                setPriceRange([priceRange[0], Math.max(Number(e.target.value), priceRange[0] + 1)])
+              }
+              style={{ zIndex: 4 }}
+              className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-7 [&::-webkit-slider-thumb]:w-7 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black [&::-webkit-slider-thumb]:shadow-lg [&::-webkit-slider-thumb]:cursor-grab [&::-webkit-slider-thumb]:active:cursor-grabbing [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110 [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:h-7 [&::-moz-range-thumb]:w-7 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-black [&::-moz-range-thumb]:shadow-lg [&::-moz-range-thumb]:cursor-grab [&::-moz-range-thumb]:active:cursor-grabbing"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-widest text-black/50 mb-1">Min</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-black/40">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={200}
+                  value={priceRange[0]}
+                  onChange={(e) =>
+                    setPriceRange([Math.max(0, Number(e.target.value)), priceRange[1]])
+                  }
+                  className="w-full bg-white border border-black/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:border-black transition-colors"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-widest text-black/50 mb-1">Max</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-black/40">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={200}
+                  value={priceRange[1]}
+                  onChange={(e) =>
+                    setPriceRange([priceRange[0], Math.min(200, Number(e.target.value))])
+                  }
+                  className="w-full bg-white border border-black/10 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:border-black transition-colors"
+                />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </details>
 
       {/* SIZE FILTER */}
-      <div className="card p-5">
-        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Size</h3>
-        <div className="flex flex-wrap gap-2">
-          {sizes.map((size) => (
-            <button
-              key={size}
-              onClick={() => toggleSize(size)}
-              className={`px-3 py-2 rounded border text-sm transition-all ${
-                selectedSizes.includes(size)
-                  ? "bg-black text-white border-black"
-                  : "bg-white border-black/10 hover:border-black"
-              }`}
-            >
-              {size}
-            </button>
-          ))}
+      <details open className="group bg-white rounded-2xl border border-black/10 overflow-hidden">
+        <summary className="list-none cursor-pointer px-5 py-4 flex items-center justify-between hover:bg-black/[0.02] transition-colors">
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-sm">Size</h3>
+            {selectedSizes.length > 0 && (
+              <span className="bg-black text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {selectedSizes.length}
+              </span>
+            )}
+          </div>
+          <ChevronDown size={16} className="text-black/40 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="px-5 pb-5 pt-3 border-t border-black/5">
+          <div className="grid grid-cols-3 gap-2">
+            {sizes.map((size) => {
+              const active = selectedSizes.includes(size);
+              return (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() => toggleSize(size)}
+                  className={`py-2.5 rounded-lg border-2 text-sm font-bold transition-all ${
+                    active
+                      ? "bg-black text-white border-black"
+                      : "bg-white border-black/10 hover:border-black/40"
+                  }`}
+                >
+                  {size}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </details>
 
       {/* CLEAR FILTERS */}
-      <button
-        onClick={() => {
-          setSelectedBrands([]);
-          setSelectedSizes([]);
-          setPriceRange([0, 200]);
-          setBrandSearch("");
-        }}
-        className="btn-outline w-full text-sm"
-      >
-        Clear All Filters
-      </button>
-    </>
+      {activeFilterCount > 0 && (
+        <button
+          type="button"
+          onClick={() => {
+            setSelectedBrands([]);
+            setSelectedSizes([]);
+            setPriceRange([0, 200]);
+            setBrandSearch("");
+          }}
+          className="w-full py-3 text-sm font-semibold text-black/60 hover:text-black hover:bg-black/[0.03] rounded-xl transition-colors"
+        >
+          Clear all filters
+        </button>
+      )}
+    </div>
   );
 
   return (
@@ -332,9 +500,18 @@ function ShopContent() {
 
       <div className="grid lg:grid-cols-4 gap-8">
         {/* DESKTOP FILTERS SIDEBAR */}
-        <aside className="hidden lg:block lg:col-span-1 space-y-6">
-          <h2 className="font-bold text-sm uppercase tracking-widest mb-4">Filters</h2>
-          <FilterPanel />
+        <aside className="hidden lg:block lg:col-span-1">
+          <div className="sticky top-24">
+            <div className="flex items-center justify-between mb-4 px-1">
+              <h2 className="font-bold text-base flex items-center gap-2">
+                <Filter size={16} /> Filters
+              </h2>
+              {activeFilterCount > 0 && (
+                <span className="text-[11px] text-black/50">{activeFilterCount} active</span>
+              )}
+            </div>
+            <FilterPanel />
+          </div>
         </aside>
 
         {/* MOBILE FILTER DRAWER */}
@@ -364,7 +541,7 @@ function ShopContent() {
                 <X size={18} />
               </button>
             </div>
-            <div className="p-5 space-y-6">
+            <div className="p-5 bg-gray-50 min-h-full">
               <FilterPanel />
             </div>
           </div>
