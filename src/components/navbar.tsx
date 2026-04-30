@@ -155,9 +155,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-black/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="Fresh Appeal" width={36} height={36} priority />
-          <span className="heading text-lg sm:text-xl tracking-widest">FRESH APPEAL</span>
+        <Link href="/" className="flex items-center gap-2 min-w-0 shrink">
+          <Image src="/logo.png" alt="Fresh Appeal" width={32} height={32} priority className="shrink-0" />
+          <span className="heading text-base sm:text-xl tracking-widest whitespace-nowrap">FRESH APPEAL</span>
         </Link>
         <nav className="hidden lg:flex items-center gap-8 text-sm">
           {links.map((l) => (
@@ -180,7 +180,7 @@ export function Navbar() {
               <Search size={18} />
             </button>
             {searchOpen && (
-              <div className="absolute right-0 top-full mt-2 w-80 bg-white border border-black/10 rounded-lg shadow-lg p-4 z-50">
+              <div className="fixed sm:absolute left-2 right-2 sm:left-auto sm:right-0 top-16 sm:top-full sm:mt-2 sm:w-80 bg-white border border-black/10 rounded-lg shadow-lg p-4 z-50">
                 <div className="relative mb-3">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40" />
                   <input
@@ -250,7 +250,7 @@ export function Navbar() {
             )}
           </button>
           {mounted && session ? (
-            <div className="relative" ref={userMenuRef}>
+            <div className="relative hidden lg:block" ref={userMenuRef}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 className="text-xs uppercase tracking-widest text-black/70 hover:text-black font-bold px-4 py-2 rounded-full border border-black/15 hover:border-black hover:bg-black hover:text-white transition-all flex items-center gap-2"
@@ -289,33 +289,104 @@ export function Navbar() {
               )}
             </div>
           ) : (
-            <Link href="/login" className="text-xs uppercase tracking-widest text-black/70 hover:text-black font-bold px-4 py-2 rounded-full border border-black/15 hover:border-black hover:bg-black hover:text-white transition-all">
+            <Link href="/login" className="hidden lg:inline-flex text-xs uppercase tracking-widest text-black/70 hover:text-black font-bold px-4 py-2 rounded-full border border-black/15 hover:border-black hover:bg-black hover:text-white transition-all">
               Login
             </Link>
           )}
           <button
-            className="lg:hidden p-2 text-black/70"
+            className="lg:hidden p-2 text-black/70 relative w-10 h-10 flex items-center justify-center"
             onClick={() => setMobile((v) => !v)}
             aria-label="Menu"
           >
-            {mobile ? <X size={20} /> : <Menu size={20} />}
+            <span className="relative w-5 h-4 inline-block">
+              <span
+                className={`absolute left-0 top-0 w-5 h-0.5 bg-black transition-all duration-300 ease-out ${
+                  mobile ? "rotate-45 translate-y-[7px]" : ""
+                }`}
+              />
+              <span
+                className={`absolute left-0 top-1/2 -translate-y-1/2 w-5 h-0.5 bg-black transition-all duration-300 ease-out ${
+                  mobile ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`absolute left-0 bottom-0 w-5 h-0.5 bg-black transition-all duration-300 ease-out ${
+                  mobile ? "-rotate-45 -translate-y-[7px]" : ""
+                }`}
+              />
+            </span>
           </button>
         </div>
       </div>
-      {mobile && (
-        <nav className="lg:hidden border-t border-black/5 px-6 py-4 flex flex-col gap-3 text-sm">
-          {links.map((l) => (
+      {/* Mobile Menu Dropdown — slides down from navbar */}
+      <div
+        className={`lg:hidden absolute left-0 right-0 top-full bg-white border-b border-black/5 shadow-lg overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+          mobile ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="px-6 py-4 flex flex-col">
+          {links.map((l, idx) => (
             <Link
               key={l.label}
               href={l.href}
               onClick={() => setMobile(false)}
-              className="text-black/70 hover:text-black"
+              className={`heading text-2xl py-3 border-b border-black/5 transition-all duration-500 hover:text-black/60 ${
+                mobile
+                  ? "translate-y-0 opacity-100"
+                  : "-translate-y-4 opacity-0"
+              }`}
+              style={{ transitionDelay: mobile ? `${150 + idx * 60}ms` : "0ms" }}
             >
-              {l.label}
+              {l.label.toUpperCase()}
             </Link>
           ))}
+          {mounted && session ? (
+            <div
+              className={`mt-4 space-y-1 transition-all duration-500 ${
+                mobile ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
+              }`}
+              style={{ transitionDelay: mobile ? `${150 + links.length * 60}ms` : "0ms" }}
+            >
+              <Link
+                href="/dashboard"
+                onClick={() => setMobile(false)}
+                className="block text-sm uppercase tracking-widest text-black/70 hover:text-black py-2"
+              >
+                Dashboard
+              </Link>
+              {(session.user as { role?: string })?.role === "admin" && (
+                <Link
+                  href="/admin"
+                  onClick={() => setMobile(false)}
+                  className="block text-sm uppercase tracking-widest text-black/70 hover:text-black py-2"
+                >
+                  Admin Panel
+                </Link>
+              )}
+              <button
+                onClick={() => {
+                  signOut({ callbackUrl: "/" });
+                  setMobile(false);
+                }}
+                className="flex items-center gap-2 text-sm uppercase tracking-widest text-black/70 hover:text-black py-2"
+              >
+                <LogOut size={14} /> Logout
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              onClick={() => setMobile(false)}
+              className={`btn-neon text-xs mt-4 inline-flex self-start transition-all duration-500 ${
+                mobile ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0"
+              }`}
+              style={{ transitionDelay: mobile ? `${150 + links.length * 60}ms` : "0ms" }}
+            >
+              Login
+            </Link>
+          )}
         </nav>
-      )}
+      </div>
     </header>
   );
 }

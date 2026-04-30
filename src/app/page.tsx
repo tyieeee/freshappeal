@@ -31,14 +31,58 @@ export default async function HomePage() {
       <InitialLoader />
       {/* HERO — Editorial split-text with model overlay */}
       <section className="relative bg-white overflow-hidden">
-        <div className="relative max-w-[1400px] mx-auto min-h-[420px] xs:min-h-[480px] sm:min-h-[680px] lg:min-h-[740px] px-4 sm:px-8">
+        {/* Mobile layout — logo centered with background effects */}
+        <div className="sm:hidden relative flex flex-col items-center justify-center min-h-[80vh] px-6 overflow-hidden">
+          {/* Background effects */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Radial gradient glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[80%] bg-gradient-radial from-black/[0.03] via-transparent to-transparent rounded-full" />
+            {/* Subtle grid pattern */}
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.5) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+            {/* Decorative circles */}
+            <div className="absolute top-[15%] right-[10%] w-32 h-32 rounded-full border border-black/[0.04]" />
+            <div className="absolute bottom-[20%] left-[5%] w-48 h-48 rounded-full border border-black/[0.04]" />
+            <div className="absolute top-[40%] left-[15%] w-16 h-16 rounded-full bg-black/[0.02]" />
+            <div className="absolute top-[25%] right-[25%] w-8 h-8 rounded-full bg-black/[0.03]" />
+          </div>
+
+          {/* Logo — slightly smaller */}
+          <div className="relative w-52 h-52 mb-5 z-10">
+            <Image
+              src="/logo.png"
+              alt="Fresh Appeal"
+              fill
+              sizes="208px"
+              className="object-contain drop-shadow-sm"
+              priority
+            />
+          </div>
+
+          {/* Brand name */}
+          <h1 className="heading text-[12vw] leading-[0.85] tracking-tight text-black text-center z-10">
+            FRESH APPEAL
+          </h1>
+
+          {/* Tagline */}
+          <p className="text-[10px] uppercase tracking-[0.3em] text-black/50 mt-3 text-center z-10">
+            Since 2024 — Streetwear Elegance
+          </p>
+
+          {/* CTA */}
+          <Link href="/shop" className="btn-neon text-xs inline-flex mt-6 z-10">
+            Shop Now <ArrowRight size={14} />
+          </Link>
+        </div>
+
+        {/* Desktop layout — absolute positioned */}
+        <div className="relative max-w-[1400px] mx-auto min-h-[680px] lg:min-h-[740px] px-8 hidden sm:block">
           {/* Massive headline behind models */}
-          <h1 className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2 w-full text-center heading text-[18vw] sm:text-[14vw] lg:text-[12vw] leading-[0.85] tracking-tight text-black select-none pointer-events-none whitespace-nowrap">
+          <h1 className="absolute top-4 left-1/2 -translate-x-1/2 w-full text-center heading text-[14vw] lg:text-[12vw] leading-[0.85] tracking-tight text-black select-none pointer-events-none whitespace-nowrap">
             FRESH APPEAL
           </h1>
 
           {/* Right side nav */}
-          <div className="absolute top-24 right-8 sm:right-16 z-20 hidden md:flex flex-col items-end gap-6">
+          <div className="absolute top-24 right-16 z-20 hidden md:flex flex-col items-end gap-6">
             <Link href="/shop" className="text-[11px] uppercase tracking-[0.3em] text-black/80 hover:text-black">
               Stores
             </Link>
@@ -51,13 +95,13 @@ export default async function HomePage() {
           </div>
 
           {/* Models image overlapping the headline */}
-          <div className="absolute inset-x-0 bottom-0 top-[15%] sm:top-[18%] flex items-end justify-center z-10 pointer-events-none">
-            <div className="relative w-full max-w-[1100px] h-[85%] sm:h-[88%]">
+          <div className="absolute inset-x-0 bottom-0 top-[18%] flex items-end justify-center z-10 pointer-events-none">
+            <div className="relative w-full max-w-[1100px] h-[88%]">
               <Image
                 src="/hero.png"
                 alt="Fresh Appeal — Streetwear collection"
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1400px) 100vw, 1100px"
+                sizes="(max-width: 1400px) 100vw, 1100px"
                 className="object-contain object-bottom"
                 priority
               />
@@ -65,29 +109,22 @@ export default async function HomePage() {
           </div>
 
           {/* Bottom-left tagline */}
-          <div className="absolute bottom-4 sm:bottom-10 left-4 sm:left-10 z-20">
-            <p className="heading text-base sm:text-xl md:text-2xl leading-[1.05] tracking-tight">
+          <div className="absolute bottom-10 left-10 z-20">
+            <p className="heading text-xl md:text-2xl leading-[1.05] tracking-tight">
               SINCE 2024<br />STREETWEAR ELEGANCE
             </p>
           </div>
 
-          {/* Bottom-right description — hidden on very small screens */}
-          <div className="absolute bottom-4 sm:bottom-10 right-4 sm:right-10 z-20 max-w-[180px] sm:max-w-[260px] text-right hidden xs:block">
-            <p className="text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-black/80 leading-relaxed font-bold">
+          {/* Bottom-right description */}
+          <div className="absolute bottom-10 right-10 z-20 max-w-[260px] text-right">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-black/80 leading-relaxed font-bold">
               Fresh Appeal proposes well-<br />
               developed, thoughtful<br />
               clothes with a discerning<br />
               point-of-view.
             </p>
-            <Link href="/shop" className="btn-neon mt-3 sm:mt-5 text-[10px] sm:text-xs inline-flex">
+            <Link href="/shop" className="btn-neon mt-5 text-xs inline-flex">
               Shop Now <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          {/* Mobile CTA — shown only on very small screens */}
-          <div className="absolute bottom-4 right-4 z-20 xs:hidden">
-            <Link href="/shop" className="btn-neon text-[10px] inline-flex">
-              Shop Now <ArrowRight size={12} />
             </Link>
           </div>
         </div>

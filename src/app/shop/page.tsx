@@ -3,7 +3,7 @@ import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ProductCard } from "@/components/product-card";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, X } from "lucide-react";
 
 const brands = [
   { id: 1, name: "Nike", logo: "🏃" },
@@ -151,7 +151,7 @@ function ShopContent() {
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 200]);
   const [brandSearch, setBrandSearch] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
     let filtered = cat ? mockProducts.filter((p) => p.category === cat) : mockProducts;
@@ -199,126 +199,156 @@ function ShopContent() {
     );
   };
 
+  const FilterPanel = () => (
+    <>
+      {/* BRAND FILTER */}
+      <div className="card p-5">
+        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Brand</h3>
+        <input
+          type="text"
+          placeholder="Search brands..."
+          value={brandSearch}
+          onChange={(e) => setBrandSearch(e.target.value)}
+          className="input mb-3 text-sm"
+        />
+        <div className="space-y-2 max-h-48 overflow-y-auto">
+          {filteredBrands.map((brand) => (
+            <label key={brand.id} className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-black/5 transition-colors">
+              <input
+                type="checkbox"
+                checked={selectedBrands.includes(brand.id)}
+                onChange={() => toggleBrand(brand.id)}
+                className="w-4 h-4 rounded border-black/20"
+              />
+              <span className="text-sm font-medium">{brand.name}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* PRICE FILTER */}
+      <div className="card p-5">
+        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Price Range</h3>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            value={priceRange[0]}
+            onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
+            className="input text-sm w-full"
+            placeholder="Min"
+          />
+          <span className="text-black/40">-</span>
+          <input
+            type="number"
+            value={priceRange[1]}
+            onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
+            className="input text-sm w-full"
+            placeholder="Max"
+          />
+        </div>
+      </div>
+
+      {/* SIZE FILTER */}
+      <div className="card p-5">
+        <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Size</h3>
+        <div className="flex flex-wrap gap-2">
+          {sizes.map((size) => (
+            <button
+              key={size}
+              onClick={() => toggleSize(size)}
+              className={`px-3 py-2 rounded border text-sm transition-all ${
+                selectedSizes.includes(size)
+                  ? "bg-black text-white border-black"
+                  : "bg-white border-black/10 hover:border-black"
+              }`}
+            >
+              {size}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* CLEAR FILTERS */}
+      <button
+        onClick={() => {
+          setSelectedBrands([]);
+          setSelectedSizes([]);
+          setPriceRange([0, 200]);
+          setBrandSearch("");
+        }}
+        className="btn-outline w-full text-sm"
+      >
+        Clear All Filters
+      </button>
+    </>
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <div className="text-center mb-10">
         <span className="text-[11px] uppercase tracking-[0.3em] text-black/50">{pageSubtitle}</span>
-        <h1 className="heading text-5xl sm:text-6xl mt-2">{pageTitle}</h1>
+        <h1 className="heading text-3xl sm:text-5xl lg:text-6xl mt-2">{pageTitle}</h1>
+      </div>
+
+      {/* Mobile Filter Trigger */}
+      <div className="lg:hidden mb-6 flex justify-end">
+        <button
+          onClick={() => setIsFilterOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 border border-black/15 rounded-full text-sm font-bold uppercase tracking-widest hover:border-black"
+          aria-label="Open filters"
+        >
+          <Filter size={16} />
+          Filters
+          {(selectedBrands.length + selectedSizes.length) > 0 && (
+            <span className="bg-black text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">
+              {selectedBrands.length + selectedSizes.length}
+            </span>
+          )}
+        </button>
       </div>
 
       <div className="grid lg:grid-cols-4 gap-8">
-        {/* FILTERS SIDEBAR */}
-        <div className={`lg:col-span-1 transition-all duration-300 ${isFilterOpen ? "space-y-6" : "w-0 overflow-hidden"}`}>
-          {isFilterOpen && (
-            <>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-sm uppercase tracking-widest">Filters</h2>
-                <button
-                  onClick={() => setIsFilterOpen(false)}
-                  className="lg:hidden p-1 hover:bg-black/5 rounded"
-                  aria-label="Close filters"
-                >
-                  <ChevronLeft size={18} />
-                </button>
-              </div>
-              {/* BRAND FILTER */}
-              <div className="card p-5">
-                <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Brand</h3>
-                <input
-                  type="text"
-                  placeholder="Search brands..."
-                  value={brandSearch}
-                  onChange={(e) => setBrandSearch(e.target.value)}
-                  className="input mb-3 text-sm"
-                />
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {filteredBrands.map((brand) => (
-                    <label key={brand.id} className="flex items-center gap-3 cursor-pointer p-2 rounded hover:bg-black/5 transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={selectedBrands.includes(brand.id)}
-                        onChange={() => toggleBrand(brand.id)}
-                        className="w-4 h-4 rounded border-black/20"
-                      />
-                      <span className="text-sm font-medium">{brand.name}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
+        {/* DESKTOP FILTERS SIDEBAR */}
+        <aside className="hidden lg:block lg:col-span-1 space-y-6">
+          <h2 className="font-bold text-sm uppercase tracking-widest mb-4">Filters</h2>
+          <FilterPanel />
+        </aside>
 
-              {/* PRICE FILTER */}
-              <div className="card p-5">
-                <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Price Range</h3>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      value={priceRange[0]}
-                      onChange={(e) => setPriceRange([Number(e.target.value), priceRange[1]])}
-                      className="input text-sm w-full"
-                      placeholder="Min"
-                    />
-                    <span className="text-black/40">-</span>
-                    <input
-                      type="number"
-                      value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], Number(e.target.value)])}
-                      className="input text-sm w-full"
-                      placeholder="Max"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* SIZE FILTER */}
-              <div className="card p-5">
-                <h3 className="font-bold text-sm uppercase tracking-widest mb-4">Size</h3>
-                <div className="flex flex-wrap gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => toggleSize(size)}
-                      className={`px-3 py-2 rounded border text-sm transition-all ${
-                        selectedSizes.includes(size)
-                          ? "bg-black text-white border-black"
-                          : "bg-white border-black/10 hover:border-black"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* CLEAR FILTERS */}
+        {/* MOBILE FILTER DRAWER */}
+        <div
+          className={`lg:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
+            isFilterOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsFilterOpen(false)}
+          />
+          {/* Drawer */}
+          <div
+            className={`absolute right-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl overflow-y-auto transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+              isFilterOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="sticky top-0 bg-white z-10 flex items-center justify-between px-5 py-4 border-b border-black/10">
+              <h2 className="font-bold text-sm uppercase tracking-widest">Filters</h2>
               <button
-                onClick={() => {
-                  setSelectedBrands([]);
-                  setSelectedSizes([]);
-                  setPriceRange([0, 200]);
-                  setBrandSearch("");
-                }}
-                className="btn-outline w-full text-sm"
+                onClick={() => setIsFilterOpen(false)}
+                className="p-1.5 hover:bg-black/5 rounded-full transition-colors"
+                aria-label="Close filters"
               >
-                Clear All Filters
+                <X size={18} />
               </button>
-            </>
-          )}
+            </div>
+            <div className="p-5 space-y-6">
+              <FilterPanel />
+            </div>
+          </div>
         </div>
 
         {/* PRODUCTS GRID */}
-        <div className={`lg:col-span-3 transition-all duration-300 ${!isFilterOpen ? "lg:col-span-4" : ""}`}>
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => setIsFilterOpen(true)}
-              className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest ${isFilterOpen ? "opacity-0 pointer-events-none" : "hover:text-black/70"}`}
-              aria-label="Open filters"
-            >
-              <Filter size={18} />
-              Filters
-            </button>
-          </div>
-
+        <div className="lg:col-span-3">
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {filteredProducts.map((product) => (

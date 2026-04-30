@@ -112,13 +112,13 @@ export function ProductDetail({ p }: { p: ProductView }) {
       </div>
 
       <div>
-        <p className="text-xs uppercase tracking-widest text-black/50">{p.category}</p>
-        <h1 className="heading text-4xl sm:text-5xl mt-2">{p.name}</h1>
-        <p className="text-2xl font-bold mt-3">{formatPrice(p.price)}</p>
+        <p className="text-[10px] uppercase tracking-widest text-black/50">{p.category}</p>
+        <h1 className="heading text-2xl sm:text-3xl lg:text-4xl mt-1">{p.name}</h1>
+        <p className="text-lg sm:text-xl font-bold mt-2">{formatPrice(p.price)}</p>
 
-        <p className="mt-6 text-black/70 leading-relaxed">{p.description}</p>
+        <p className="mt-4 text-sm text-black/70 leading-relaxed">{p.description}</p>
 
-        <div className="mt-8">
+        <div className="mt-6">
           <p className="label">Size</p>
           <div className="flex flex-wrap gap-2">
             {p.sizes.map((s) => {
@@ -144,32 +144,32 @@ export function ProductDetail({ p }: { p: ProductView }) {
           </p>
         </div>
 
-        <div className="flex gap-3 mt-8">
+        <div className="flex gap-2 sm:gap-3 mt-6">
           <button
             onClick={handleAdd}
             disabled={outOfStock}
-            className="btn-outline flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-outline flex-1 !px-3 !py-2 sm:!px-6 sm:!py-3 !text-[10px] sm:!text-xs disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {added ? (
               <>
-                <Check size={18} /> Added
+                <Check size={14} /> Added
               </>
             ) : (
               <>
-                <ShoppingBag size={18} /> {outOfStock ? "Out of stock" : "Add to Cart"}
+                <ShoppingBag size={14} /> {outOfStock ? "Out of stock" : "Add to Cart"}
               </>
             )}
           </button>
           <button
             onClick={handleBuyNow}
             disabled={outOfStock}
-            className="btn-neon flex-1 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-neon flex-1 !px-3 !py-2 sm:!px-6 sm:!py-3 !text-[10px] sm:!text-xs disabled:opacity-40 disabled:cursor-not-allowed"
           >
             {outOfStock ? "Out of stock" : "Buy Now"}
           </button>
         </div>
 
-        <div className="mt-10 border-t border-black/10 pt-6 grid gap-4 text-sm text-black/70">
+        <div className="mt-6 border-t border-black/10 pt-4 grid gap-3 text-xs text-black/70">
           <div>
             <p className="text-xs uppercase tracking-widest text-black/40 mb-1">Material</p>
             Premium heavyweight cotton, garment-washed.
@@ -257,6 +257,7 @@ export function ProductDetail({ p }: { p: ProductView }) {
           </div>
         </div>
       </div>
+
 
       {/* LIGHTBOX OVERLAY */}
       {lightboxOpen && (
